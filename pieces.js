@@ -1,5 +1,25 @@
-// Récupère les pièces depuis le fichier JSON
-const pieces = await fetch("pieces-autos.json").then((pieces) => pieces.json());
+import {
+  afficherAvis,
+  ajoutListenerAvis,
+  ajoutListenerEnvoyerAvis,
+} from "./avis.js";
+// Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem("pieces");
+
+if (pieces === null) {
+  // Récupère les pièces depuis le fichier JSON
+  const response = await fetch("http://localhost:8081/pieces");
+  pieces = await response.json();
+  //Transformation des pièces en JSON
+  const valeurPieces = JSON.stringify(pieces);
+  // Stockage des informations dans le localStorage
+  window.localStorage.setItem("piece", valeurPieces);
+} else {
+  pieces = JSON.parse(pieces);
+}
+
+// On appelle la fonction pour ajouter le listener au formulaire
+ajoutListenerEnvoyerAvis();
 
 // Fonction générant toute la page web
 function genererPieces(pieces) {
@@ -25,6 +45,9 @@ function genererPieces(pieces) {
       article.description ?? "(Pas de description pour le moment)";
     const stockElement = document.createElement("p");
     stockElement.innerText = article.disponibilite ? "En stock" : "En rupture";
+    const avisBouton = document.createElement("button");
+    avisBouton.dataset.id = article.id;
+    avisBouton.textContent = "Afficher les avis";
 
     // On rattache la balise article à la balise fiches
     sectionFiches.appendChild(pieceElement);
@@ -35,11 +58,25 @@ function genererPieces(pieces) {
     pieceElement.appendChild(categorieElement);
     pieceElement.appendChild(descriptionElement);
     pieceElement.appendChild(stockElement);
+    pieceElement.appendChild(avisBouton);
   }
+  // Ajout de la fonction ajoutListenerAvis
+  ajoutListenerAvis();
 }
 
 // Premier affichage de la page
 genererPieces(pieces);
+
+for (let i = 0; i < pieces.length; i++) {
+  const id = pieces[i].id;
+  const avisJSON = window.localStorage.getItem(`avis-piece-${id}`);
+  const avis = JSON.parse(avisJSON);
+
+  if (avis !== null) {
+    const pieceElement = document.querySelector(`article[data-id="${id}"]`);
+    afficherAvis(pieceElement, avis);
+  }
+}
 
 // Ajout du listener pour trier les pièces par ordre de prix croissant
 const boutonTrier = document.querySelector(".btn-trier");
@@ -87,6 +124,55 @@ boutonNoDescription.addEventListener("click", function () {
   genererPieces(piecesFiltrees);
 });
 
+const noms = pieces.map((piece) => piece.nom);
+for (let i = pieces.length - 1; i >= 0; i--) {
+  if (pieces[i].prix > 35) {
+    noms.splice(i, 1);
+  }
+}
+
+//Création de l'en-tête
+const pElement = document.createElement("p");
+pElement.innerText = "Pièces abordables";
+//Création de la liste
+const abordablesElements = document.createElement("ul");
+//Ajout de chaque nom à la liste
+for (let i = 0; i < noms.length; i++) {
+  const nomElement = document.createElement("li");
+  nomElement.innerText = noms[i];
+  abordablesElements.appendChild(nomElement);
+}
+// Ajout de l'en-tête puis de la liste au bloc résultats filtres
+document
+  .querySelector(".abordables")
+  .appendChild(pElement)
+  .appendChild(abordablesElements);
+
+const nomsDisponibles = pieces.map((piece) => piece.nom);
+const prixDisponibles = pieces.map((piece) => piece.prix);
+
+for (let i = pieces.length - 1; i >= 0; i--) {
+  if (pieces[i].disponibilite === false) {
+    nomsDisponibles.splice(i, 1);
+    prixDisponibles.splice(i, 1);
+  }
+}
+
+const disponiblesElement = document.createElement("ul");
+
+for (let i = 0; i < nomsDisponibles.length; i++) {
+  const nomElement = document.createElement("li");
+  nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]} €`;
+  disponiblesElement.appendChild(nomElement);
+}
+
+const pElementDisponible = document.createElement("p");
+pElementDisponible.innerText = "Pièces disponibles:";
+document
+  .querySelector(".disponibles")
+  .appendChild(pElementDisponible)
+  .appendChild(disponiblesElement);
+
 const inputPrixMax = document.querySelector("#prix-max");
 inputPrixMax.addEventListener("input", function () {
   const piecesFiltrees = pieces.filter(function (piece) {
@@ -94,4 +180,10 @@ inputPrixMax.addEventListener("input", function () {
   });
   document.querySelector(".fiches").innerHTML = "";
   genererPieces(piecesFiltrees);
+});
+
+// Ajout du listener pour mettre à jour les données du localStorage
+const boutonMettreAJour = document.querySelector(".btn-maj");
+boutonMettreAJour.addEventListener("click", function () {
+  window.localStorage.removeItem("piece");
 });

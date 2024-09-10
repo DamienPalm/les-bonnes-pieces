@@ -21,12 +21,31 @@
 			<button type="button" class="btn-filtrer">Filtrer les pièces non abordables</button><br>
 			<button type="button" class="btn-decroissant">Trier par prix décroissant</button><br>
 			<button type="button" class="btn-nodesc">Filtrer les pièces sans description</button><br>
+
 			<p>Prix maximum :</p>
 			<input type="range" name="prix-max" min="0" max="60" step="5" id="prix-max">
+
+			<h3>Ajouter un avis</h3>
+			<form class="formulaire-avis">
+				Identifiant de la pièce :<br>
+				<input type="number" min="1" name="piece-id"><br>
+				Nom d'utilisateur :<br>
+				<input type="text" name="utilisateur"><br>
+				Avis :<br>
+				<input type="text" name="commentaire"><br>
+				Nombre d'étoiles :<br>
+				<input type="number" min="0" max="5" name="nbEtoile"><br>
+				<button>Envoyer</button>
+			</form>
+
+			<h3>Données</h3>
+			<button class="btn-maj">Mettre à jour les pièces</button>
 		</section>
 
 		<!-- Fiches produits -->
 		<section class="fiches">
+			<div class="abordables"></div>
+			<div class="disponibles"></div>
 		</section>
 	</main>
 </body>
