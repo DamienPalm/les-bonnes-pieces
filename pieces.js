@@ -1,5 +1,6 @@
 import {
   afficherAvis,
+  afficherGraphiqueAvis,
   ajoutListenerAvis,
   ajoutListenerEnvoyerAvis,
 } from "./avis.js";
@@ -187,3 +188,5 @@ const boutonMettreAJour = document.querySelector(".btn-maj");
 boutonMettreAJour.addEventListener("click", function () {
   window.localStorage.removeItem("piece");
 });
+
+await afficherGraphiqueAvis();
