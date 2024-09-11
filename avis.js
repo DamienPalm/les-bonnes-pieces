@@ -65,7 +65,7 @@ export async function afficherGraphiqueAvis() {
     datasets: [
       {
         label: "Etoiles attribuées",
-        data: nb_commentaires.reverse(),
+        data: nb_commentaires.reverse(), // Le reverse permet de mettre les commentaires à 5 étoiles en haut
         backgroundColor: "rgba(255, 230, 0, 1)", // couleur jaune
       },
     ],
@@ -79,7 +79,6 @@ export async function afficherGraphiqueAvis() {
       indexAxis: "y",
     },
   };
-
   // Rendu du graphiques dans l'élément canvas
   new Chart(document.getElementById("graphique-avis"), config);
 
@@ -124,5 +123,5 @@ export async function afficherGraphiqueAvis() {
     data: dataDispo,
   };
 
-  new Chart(document.querySelector("#graphique-dispo"), configDispo);
+  new Chart(document.getElementById("graphique-dispo"), configDispo);
 }

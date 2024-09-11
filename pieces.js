@@ -115,7 +115,7 @@ boutonFiltrer.addEventListener("click", function () {
   genererPieces(piecesFiltrees);
 });
 
-// du listener pour filtrer les pièces sans description
+// Ajout du listener pour filtrer les pièces sans description
 const boutonNoDescription = document.querySelector(".btn-nodesc");
 boutonNoDescription.addEventListener("click", function () {
   const piecesFiltrees = pieces.filter(function (piece) {
@@ -125,55 +125,7 @@ boutonNoDescription.addEventListener("click", function () {
   genererPieces(piecesFiltrees);
 });
 
-const noms = pieces.map((piece) => piece.nom);
-for (let i = pieces.length - 1; i >= 0; i--) {
-  if (pieces[i].prix > 35) {
-    noms.splice(i, 1);
-  }
-}
-
-//Création de l'en-tête
-const pElement = document.createElement("p");
-pElement.innerText = "Pièces abordables";
-//Création de la liste
-const abordablesElements = document.createElement("ul");
-//Ajout de chaque nom à la liste
-for (let i = 0; i < noms.length; i++) {
-  const nomElement = document.createElement("li");
-  nomElement.innerText = noms[i];
-  abordablesElements.appendChild(nomElement);
-}
-// Ajout de l'en-tête puis de la liste au bloc résultats filtres
-document
-  .querySelector(".abordables")
-  .appendChild(pElement)
-  .appendChild(abordablesElements);
-
-const nomsDisponibles = pieces.map((piece) => piece.nom);
-const prixDisponibles = pieces.map((piece) => piece.prix);
-
-for (let i = pieces.length - 1; i >= 0; i--) {
-  if (pieces[i].disponibilite === false) {
-    nomsDisponibles.splice(i, 1);
-    prixDisponibles.splice(i, 1);
-  }
-}
-
-const disponiblesElement = document.createElement("ul");
-
-for (let i = 0; i < nomsDisponibles.length; i++) {
-  const nomElement = document.createElement("li");
-  nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]} €`;
-  disponiblesElement.appendChild(nomElement);
-}
-
-const pElementDisponible = document.createElement("p");
-pElementDisponible.innerText = "Pièces disponibles:";
-document
-  .querySelector(".disponibles")
-  .appendChild(pElementDisponible)
-  .appendChild(disponiblesElement);
-
+// Ajout du listener pour la range de prix
 const inputPrixMax = document.querySelector("#prix-max");
 inputPrixMax.addEventListener("input", function () {
   const piecesFiltrees = pieces.filter(function (piece) {
